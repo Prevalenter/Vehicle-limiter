@@ -1,5 +1,9 @@
 import wx
 import cv2
+from VideoCapture import Device
+from menu import *
+camlist=Device()
+print(camlist.getDisplayName())
 # temp=cv2.VideoCapture(0)
 # ret, frame = temp.read()
 # print(ret)
@@ -50,28 +54,27 @@ class MyFrame(wx.Frame):
     def __init__(self, parent, ID, title):
         wx.Frame.__init__(self, parent, ID, title, size=(300, 250))
         self.Maximize(True) 
-        panel_text= wx.TextCtrl(self,-1,style=wx.TE_MULTILINE ,name='TextCtrlNameStr')
-        camera_test(panel_text,3)
+        self.panel_text= wx.TextCtrl(self,-1,style=wx.TE_MULTILINE ,name='TextCtrlNameStr')
+        camera_test(self.panel_text,3)
         capture0 = cv2.VideoCapture(0)
-        panel_rgb= ShowCapture(self,capture0)
-        panel_gray = wx.Panel(self,-1, style=wx.SUNKEN_BORDER)
+        self.panel_cam= ShowCapture(self,capture0)
+        self.panel_gray = wx.Panel(self,-1, style=wx.SUNKEN_BORDER)
 
         # for i in range(10):
 
-        panel_text.AppendText("华东交通大学车辆限界测量系统V1.0\n")
-        # print(panel_text.value)
-        panel_rgb.SetBackgroundColour("WHITE")
-        panel_gray.SetBackgroundColour("WHITE")
-        panel_text.SetBackgroundColour("WHITE")
+        self.panel_text.AppendText("华东交通大学车辆限界测量系统V1.0\n")
+        self.panel_cam.SetBackgroundColour("WHITE")
+        self.panel_gray.SetBackgroundColour("WHITE")
+        self.panel_text.SetBackgroundColour("WHITE")
 
         topSizer = wx.BoxSizer(wx.VERTICAL)
 
         sizer1 = wx.BoxSizer(wx.HORIZONTAL)
-        sizer1.Add(panel_rgb, 1, wx.EXPAND)
-        sizer1.Add(panel_gray, 1, wx.EXPAND)
+        sizer1.Add(self.panel_cam, 1, wx.EXPAND)
+        sizer1.Add(self.panel_gray, 1, wx.EXPAND)
 
         topSizer.Add(sizer1,3, wx.EXPAND)
-        topSizer.Add(panel_text,1, wx.EXPAND)
+        topSizer.Add(self.panel_text,1, wx.EXPAND)
         # and a status bar
         self.CreateStatusBar()
         self.SetStatusText("轨道车辆运维技术与装备研究中心")
@@ -128,9 +131,14 @@ class MyFrame(wx.Frame):
         # Finally, associate a handler function with the EVT_MENU event for
         # each of the menu items. That means that when that menu item is
         # activated then the associated handler function will be called.
-        # self.Bind(wx.EVT_MENU, self.OnHello, helloItem)
+        self.Bind(wx.EVT_MENU, self.OnNew, newItem)
+
         # self.Bind(wx.EVT_MENU, self.OnExit,  exitItem)
         # self.Bind(wx.EVT_MENU, self.OnAbout, aboutItem)
+    def OnNew(self,event):
+        pd = NewTool()
+        pd.start(self,None)
+        # print('ok')
 if __name__ == "__main__":
     app = wx.App()
     frame = MyFrame(None, -1, "华东交通大学车辆限界测量系统")
