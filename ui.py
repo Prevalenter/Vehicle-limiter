@@ -1,7 +1,8 @@
 import wx
 import cv2
 from VideoCapture import Device
-from menu import *
+from menu import NewTool
+from test import buildMenuBarByPath
 camlist=Device()
 print(camlist.getDisplayName())
 # temp=cv2.VideoCapture(0)
@@ -78,7 +79,9 @@ class MyFrame(wx.Frame):
         # and a status bar
         self.CreateStatusBar()
         self.SetStatusText("轨道车辆运维技术与装备研究中心")
-        self.makeMenuBar()
+        # self.makeMenuBar()
+        buildMenuBarByPath(self)
+
         self.SetAutoLayout(True)
         self.SetSizer(topSizer)
         self.Layout()
@@ -140,7 +143,11 @@ class MyFrame(wx.Frame):
         pd.start(self,None)
         # print('ok')
 if __name__ == "__main__":
-    app = wx.App()
-    frame = MyFrame(None, -1, "华东交通大学车辆限界测量系统")
-    frame.Show()
+    app = wx.App(False)
+    mainFrame = MyFrame(None, -1, "华东交通大学车辆限界测量系统")
+    mainFrame.Show()
+    # pd = NewTool()
+    # pd.start(mainFrame,None)
+    # pd.pack()
+    # pd.ShowModal()
     app.MainLoop()

@@ -1,6 +1,6 @@
 from config import ParaDialog
 import wx
-from ui import MyFrame
+# from ui import MyFrame
 class newui(ParaDialog):
     def __init__( self, parent, title):
         ParaDialog.__init__(self, parent, title)
