@@ -1,16 +1,16 @@
-from config import ParaDialog
+# from config import ParaDialog
 import wx
 # from ui import MyFrame
-class newui(ParaDialog):
-    def __init__( self, parent, title):
-        ParaDialog.__init__(self, parent, title)
-        self.view=[(bool, 'Preview', 'preview') ]
-        # self.arg_buf=self.data.copy()
-        # self.init_view(self.view, self.data,modal=False)
-        self.pack()
-        self.ShowModal()
-    def handle_(self,para):
-        pass
+# class newui(ParaDialog):
+#     def __init__( self, parent, title):
+#         ParaDialog.__init__(self, parent, title)
+#         self.view=[(bool, 'Preview', 'preview') ]
+#         # self.arg_buf=self.data.copy()
+#         # self.init_view(self.view, self.data,modal=False)
+#         self.pack()
+#         self.ShowModal()
+#     def handle_(self,para):
+#         pass
 class Tool:
     title = 'title'
     para = None

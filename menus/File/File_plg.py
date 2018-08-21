@@ -1,23 +1,67 @@
 import sys
+import cv2
 sys.path.append('..')
 from ..config import Tool
 import wx
-# from ..ui import MyFrame
-
+from VideoCapture import Device
+class ShowCapture(wx.Panel):
+    def __init__(self, parent, capture, fps=30):
+        wx.Panel.__init__(self, parent, style=wx.SUNKEN_BORDER)
+        self.SetDoubleBuffered(True)
+        self.capture = capture
+        ret, frame = self.capture.read()
+        self.height, self.width = 480,417
+        self._Buffer = wx.Bitmap((self.height,self.width))
+        frame=cv2.resize(frame,(self.height,self.width))
+        self.bmp = wx.Bitmap.FromBuffer(self.height,self.width, frame)
+        self.timer = wx.Timer(self)
+        self.timer.Start(1000./fps)
+        self.Bind(wx.EVT_PAINT, self.OnPaint)
+        self.Bind(wx.EVT_TIMER, self.NextFrame)
+        self.Bind(wx.EVT_SIZE, self.OnSize)
+    def OnSize(self,event):
+        self._Buffer = wx.Bitmap((self.height,self.width))
+    def OnPaint(self, evt):
+        dc = wx.BufferedPaintDC(self, self._Buffer)
+    def NextFrame(self, event):
+        ret, frame = self.capture.read()
+        if ret:
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            frame=cv2.resize(frame,(self.height,self.width))
+            self.bmp.CopyFromBuffer(frame)
+            self.UpdateDrawing()
+            self.Refresh()
+    def UpdateDrawing(self):
+        dc=wx.BufferedDC(wx.ClientDC(self), self._Buffer)
+        self.Draw(dc)
+    def Draw(self,dc):
+        dc.DrawBitmap(self.bmp, 0, 0)
 class NewTool(Tool):
-    para = {'w':300, 'h':512}
+    camlist=Device().getDisplayName().split(',')
+    para = {'w':300, 'cam':camlist[0]}
     view = [(int, (100,1000), 0, 'width', 'w', 'pix'),
-            (int, (100,1000), 0, 'height', 'h', 'pix')]
-    # img = '../imgdata/new.png'
+            (list, camlist, str, 'cam', 'cam', 'cam')]
     string="&新建...\tCtrl-N"
-    title = '新建限界'
+    statustext = '新建限界'
     def run(self, parent, doc, para):
-        print('you did it')
-        # parent.doc = Doc()
-        # parent.doc.para = {'w':para['w'], 'h':para['h']}
-        # parent.canvas.Zoom(1/parent.canvas.Scale, 
-        #     (para['w']//2, -para['h']//2))
-    # def formenus(self,parent):
+        campanellst=[]
+        topsizer = wx.BoxSizer(wx.VERTICAL)
+        horisizer1 = wx.BoxSizer(wx.HORIZONTAL)
+        campanellst.append(ShowCapture(parent.win_panel,cv2.VideoCapture(0)))
+        horisizer1.Add(campanellst[0],3, wx.EXPAND)
+        horisizer1.Add(wx.Button(parent.win_panel, -1, "按钮4"),3, wx.EXPAND)
+        horisizer1.Add(wx.Button(parent.win_panel, -1, "按钮4"),3, wx.EXPAND)
+
+        horisizer2 = wx.BoxSizer(wx.HORIZONTAL)
+        horisizer2.Add(wx.Button(parent.win_panel, -1, "按钮4"),3, wx.EXPAND)
+        horisizer2.Add(wx.Button(parent.win_panel, -1, "按钮4"),3, wx.EXPAND)
+        horisizer2.Add(wx.Button(parent.win_panel, -1, "按钮4"),3, wx.EXPAND)
+
+        topsizer.Add(horisizer1,2, wx.EXPAND)
+        topsizer.Add(horisizer2,2, wx.EXPAND)
+        parent.win_panel.SetAutoLayout(True)
+        parent.win_panel.SetSizer(topsizer)
+        parent.win_panel.Layout()
 
 menus = [NewTool]
 
@@ -27,6 +71,5 @@ if __name__ == '__main__':
     mainFrame.Show()
     pd = NewTool()
     pd.start(mainFrame,None)
-    # pd.pack()
     pd.ShowModal()
     app.MainLoop()

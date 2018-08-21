@@ -250,6 +250,7 @@ class Tool:
     title = 'title'
     para = None
     view = None
+    statustext =''
     def preview(self, parent, doc, para=None):
         self.run(parent, doc, para)
         parent.update()
@@ -261,7 +262,7 @@ class Tool:
 
         if self.dialog.ShowModal() == wx.ID_OK:
             self.run(parent, doc, self.para)
-            parent.update()
+            # parent.update()
         self.dialog.Destroy()
     def start(self, parent, doc):
         if self.para is None:

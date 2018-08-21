@@ -2,19 +2,19 @@ import sys
 sys.path.append('..')
 from ..config import Tool
 import wx
-# from ui import MyFrame
-
+# from ..ui import MyFrame
+import myvi
 class NewTool(Tool):
     para = {'w':300, 'h':512}
     view = [(int, (100,1000), 0, 'width', 'w', 'pix'),
             (int, (100,1000), 0, 'height', 'h', 'pix')]
     # img = '../imgdata/new.png'
-    statustext = '新建限界'
     string="&新建...\tCtrl-N"
+    # statustext = '新建限界'
     def run(self, parent, doc, para):
-        print('you did it11')
-        # parent.canvas.Zoom(1/parent.canvas.Scale, 
-        #     (para['w']//2, -para['h']//2))
+        camlist=Device()
+        print(camlist.getDisplayName())
+
 menus = [NewTool]
 
 if __name__ == '__main__':
