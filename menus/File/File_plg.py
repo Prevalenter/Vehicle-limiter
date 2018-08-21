@@ -16,6 +16,7 @@ class ShowCapture(wx.Panel):
         self.bmp = wx.Bitmap.FromBuffer(self.height,self.width, frame)
         self.timer = wx.Timer(self)
         self.timer.Start(1000./fps)
+
         self.Bind(wx.EVT_PAINT, self.OnPaint)
         self.Bind(wx.EVT_TIMER, self.NextFrame)
         self.Bind(wx.EVT_SIZE, self.OnSize)
@@ -36,6 +37,44 @@ class ShowCapture(wx.Panel):
         self.Draw(dc)
     def Draw(self,dc):
         dc.DrawBitmap(self.bmp, 0, 0)
+class TabOne(wx.Panel):
+    """docstring for TabOne"""
+    def __init__(self, parent):
+        wx.Panel.__init__(self, parent)
+        self.parent = parent
+        campanellst=[]
+        topsizer = wx.BoxSizer(wx.VERTICAL)
+        horisizer1 = wx.BoxSizer(wx.HORIZONTAL)
+        campanellst.append(ShowCapture(self,cv2.VideoCapture(0)))
+        horisizer1.Add(campanellst[0],3, wx.EXPAND)
+        horisizer1.Add(wx.Button(self, -1, "按钮4"),3, wx.EXPAND)
+        horisizer1.Add(wx.Button(self, -1, "按钮4"),3, wx.EXPAND)
+
+        horisizer2 = wx.BoxSizer(wx.HORIZONTAL)
+        horisizer2.Add(wx.Button(self, -1, "按钮4"),3, wx.EXPAND)
+        horisizer2.Add(wx.Button(self, -1, "按钮4"),3, wx.EXPAND)
+        horisizer2.Add(wx.Button(self, -1, "按钮4"),3, wx.EXPAND)
+
+        topsizer.Add(horisizer1,2, wx.EXPAND)
+        topsizer.Add(horisizer2,2, wx.EXPAND)
+
+        self.SetAutoLayout(True)
+        self.SetSizer(topsizer)
+        self.Layout()
+class TabTwo(wx.Panel):
+    def __init__(self, parent):
+        wx.Panel.__init__(self, parent)
+        # t = wx.StaticText(self, -1, "This is the third tab", (20,20))
+        horisizer1 = wx.BoxSizer(wx.HORIZONTAL)
+        horisizer1.Add(wx.Button(self, -1, "按钮4"),3, wx.EXPAND)
+        horisizer1.Add(wx.Button(self, -1, "按钮4"),3, wx.EXPAND)
+        self.SetAutoLayout(True)
+        self.SetSizer(horisizer1)
+        self.Layout() 
+class TabFour(wx.Panel):
+    def __init__(self, parent):
+        wx.Panel.__init__(self, parent)
+        t = wx.StaticText(self, -1, "This is the last tab", (20,20))
 class NewTool(Tool):
     camlist=Device().getDisplayName().split(',')
     para = {'w':300, 'cam':camlist[0]}
@@ -44,24 +83,23 @@ class NewTool(Tool):
     string="&新建...\tCtrl-N"
     statustext = '新建限界'
     def run(self, parent, doc, para):
-        campanellst=[]
-        topsizer = wx.BoxSizer(wx.VERTICAL)
-        horisizer1 = wx.BoxSizer(wx.HORIZONTAL)
-        campanellst.append(ShowCapture(parent.win_panel,cv2.VideoCapture(0)))
-        horisizer1.Add(campanellst[0],3, wx.EXPAND)
-        horisizer1.Add(wx.Button(parent.win_panel, -1, "按钮4"),3, wx.EXPAND)
-        horisizer1.Add(wx.Button(parent.win_panel, -1, "按钮4"),3, wx.EXPAND)
 
-        horisizer2 = wx.BoxSizer(wx.HORIZONTAL)
-        horisizer2.Add(wx.Button(parent.win_panel, -1, "按钮4"),3, wx.EXPAND)
-        horisizer2.Add(wx.Button(parent.win_panel, -1, "按钮4"),3, wx.EXPAND)
-        horisizer2.Add(wx.Button(parent.win_panel, -1, "按钮4"),3, wx.EXPAND)
+        nb = wx.Notebook(parent.win_panel)
 
-        topsizer.Add(horisizer1,2, wx.EXPAND)
-        topsizer.Add(horisizer2,2, wx.EXPAND)
-        parent.win_panel.SetAutoLayout(True)
-        parent.win_panel.SetSizer(topsizer)
-        parent.win_panel.Layout()
+        tab=TabOne(nb)
+        tab1=TabTwo(nb)
+        tab2=TabFour(nb)
+
+        nb.AddPage(tab, "各点位")
+        nb.AddPage(tab1, "融合整体")
+        nb.AddPage(tab2, "Tab 3")
+
+        sizer = wx.BoxSizer()
+        sizer.Add(nb, 1, wx.EXPAND)
+        parent.win_panel.SetSizer(sizer)
+        parent.Maximize(False) 
+        parent.Maximize(True)
+        parent.win_panel.Refresh()
 
 menus = [NewTool]
 
